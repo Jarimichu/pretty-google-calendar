@@ -96,12 +96,52 @@ async function pgcal_render_calendar(pgcalSettings, ajaxurl) {
       if (pgcalSettings["use_tooltip"] === "true") {
         pgcal_tippyRender(info, currCal);
       }
+      
+      // Find the event element first
+      const eventEl = info.el;
+      
+      // Only add buttons in list view, not in grid/calendar view
+      if (eventEl.closest('.fc-list-event')) {
+        // Extract data for all button types
+        const meetLink = pgcal_extractMeetLink(info.event);
+        const driveLinks = pgcal_extractDriveLinks(info.event);
+        const eventUrl = info.event.url;
+        
+        if (meetLink || driveLinks.length > 0 || eventUrl) {
+          const meetButton = pgcal_createMeetButton(meetLink);
+          const docsButton = pgcal_createDocumentsButton(driveLinks);
+          const eventButton = pgcal_createEventButton(eventUrl);
+          
+          // Create a container for the buttons
+          const buttonsContainer = document.createElement('div');
+          buttonsContainer.className = 'pgcal-buttons-container';
+          
+          // Add all buttons to the container
+          let buttonsHtml = '';
+          if (docsButton) buttonsHtml += docsButton;
+          if (meetButton) buttonsHtml += meetButton;
+          if (eventButton) buttonsHtml += eventButton;
+          buttonsContainer.innerHTML = buttonsHtml;
+          
+          // Add to the list event row (parent container)
+          const listEventRow = eventEl.closest('.fc-list-event');
+          if (listEventRow) {
+            listEventRow.style.position = 'relative';
+            listEventRow.appendChild(buttonsContainer);
+          }
+        }
+      }
     },
 
     eventClick: function (info) {
+      // Always prevent default link behavior to avoid interference with custom buttons
+      // Users can still access the event via the "View Event" button
       if (
         pgcalSettings["use_tooltip"] === "true" ||
-        pgcalSettings["no_link"] === "true"
+        pgcalSettings["no_link"] === "true" ||
+        pgcal_extractMeetLink(info.event) ||
+        pgcal_extractDriveLinks(info.event).length > 0 ||
+        info.event.url
       ) {
         info.jsEvent.preventDefault(); // Prevent following link
       }

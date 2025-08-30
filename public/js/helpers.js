@@ -15,6 +15,11 @@ function pgcal_resolve_cals(settings) {
     calArgs.push({
       googleCalendarId: cals[i],
       className: `pgcal-event-${i}`,
+      // Request additional fields from Google Calendar API to get Google Meet links
+      extraParams: {
+        // Request hangoutLink and conferenceData fields
+        // Note: This will only work if the calendar has proper permissions
+      }
     });
   }
   return calArgs;
@@ -205,6 +210,188 @@ function pgcal_addToGoogle(url) {
   if (url) {
     return `<a class="button" href="${url}" target="_blank">${buttonLabel}</a>`;
   }
+}
+
+/**
+ * Extract Google Meet link from event description or location
+ *
+ * @param {object} event Event object from FullCalendar
+ * @returns {string|null} Google Meet URL if found, null otherwise
+ */
+function pgcal_extractMeetLink(event) {
+  // Google Meet URL patterns (both HTTP and HTTPS)
+  const meetRegex = /https?:\/\/meet\.google\.com\/[a-z0-9-]+/gi;
+  
+  // Check if there's a hangoutLink property (Google Calendar API)
+  if (event.extendedProps && event.extendedProps.hangoutLink) {
+    return event.extendedProps.hangoutLink;
+  }
+  
+  // Check for hangoutLink directly on the event (some API responses)
+  if (event.hangoutLink) {
+    return event.hangoutLink;
+  }
+  
+  // Check for conferenceData (newer Google Calendar API)
+  if (event.extendedProps && event.extendedProps.conferenceData && 
+      event.extendedProps.conferenceData.entryPoints) {
+    for (const entryPoint of event.extendedProps.conferenceData.entryPoints) {
+      if (entryPoint.entryPointType === 'video' && entryPoint.uri) {
+        return entryPoint.uri;
+      }
+    }
+  }
+  
+  // Check the description for Meet links
+  if (event.extendedProps && event.extendedProps.description) {
+    const descriptionMatch = event.extendedProps.description.match(meetRegex);
+    if (descriptionMatch) {
+      return descriptionMatch[0];
+    }
+  }
+  
+  // Check the location for Meet links
+  if (event.extendedProps && event.extendedProps.location) {
+    const locationMatch = event.extendedProps.location.match(meetRegex);
+    if (locationMatch) {
+      return locationMatch[0];
+    }
+  }
+  
+  // Check location directly on event
+  if (event.location) {
+    const locationMatch = event.location.match(meetRegex);
+    if (locationMatch) {
+      return locationMatch[0];
+    }
+  }
+  
+  // Check description directly on event  
+  if (event.description) {
+    const descriptionMatch = event.description.match(meetRegex);
+    if (descriptionMatch) {
+      return descriptionMatch[0];
+    }
+  }
+  
+  return null;
+}
+
+/**
+ * Extract Google Drive links from event attachments or description
+ *
+ * @param {object} event Event object from FullCalendar
+ * @returns {array} Array of Google Drive URLs found
+ */
+function pgcal_extractDriveLinks(event) {
+  const driveLinks = [];
+  
+  // Google Drive URL patterns (docs, sheets, slides, drive files)
+  const driveRegex = /https?:\/\/(?:docs|sheets|slides|drive)\.google\.com\/[^\s<>"]+/gi;
+  
+  // Check attachments first (Google Calendar API)
+  if (event.extendedProps && event.extendedProps.attachments) {
+    for (const attachment of event.extendedProps.attachments) {
+      if (attachment.fileUrl && attachment.fileUrl.match(driveRegex)) {
+        driveLinks.push({
+          url: attachment.fileUrl,
+          title: attachment.title || 'Document'
+        });
+      }
+    }
+  }
+  
+  // Check attachments directly on event
+  if (event.attachments) {
+    for (const attachment of event.attachments) {
+      if (attachment.fileUrl && attachment.fileUrl.match(driveRegex)) {
+        driveLinks.push({
+          url: attachment.fileUrl,
+          title: attachment.title || 'Document'
+        });
+      }
+    }
+  }
+  
+  // Check the description for Drive links
+  if (event.extendedProps && event.extendedProps.description) {
+    const descriptionMatches = event.extendedProps.description.match(driveRegex);
+    if (descriptionMatches) {
+      descriptionMatches.forEach(url => {
+        // Avoid duplicates
+        if (!driveLinks.some(link => link.url === url)) {
+          driveLinks.push({
+            url: url,
+            title: 'Document'
+          });
+        }
+      });
+    }
+  }
+  
+  // Check description directly on event  
+  if (event.description) {
+    const descriptionMatches = event.description.match(driveRegex);
+    if (descriptionMatches) {
+      descriptionMatches.forEach(url => {
+        // Avoid duplicates
+        if (!driveLinks.some(link => link.url === url)) {
+          driveLinks.push({
+            url: url,
+            title: 'Document'
+          });
+        }
+      });
+    }
+  }
+  
+  return driveLinks;
+}
+
+/**
+ * Create View Documents button for Google Drive links
+ *
+ * @param {array} driveLinks Array of drive link objects
+ * @returns {string} HTML button element
+ */
+function pgcal_createDocumentsButton(driveLinks) {
+  if (!driveLinks || driveLinks.length === 0) return '';
+  
+  // If only one document, open it directly
+  if (driveLinks.length === 1) {
+    return `<button class="pgcal-docs-btn" onclick="window.open('${driveLinks[0].url}', '_blank')" title="View Document">View Documents</button>`;
+  }
+  
+  // If multiple documents, create a dropdown-like behavior
+  const linksHtml = driveLinks.map(link => 
+    `window.open('${link.url}', '_blank');`
+  ).join(' ');
+  
+  return `<button class="pgcal-docs-btn" onclick="${linksHtml}" title="View ${driveLinks.length} Documents">View Documents</button>`;
+}
+
+/**
+ * Create View Event button for Google Calendar event
+ *
+ * @param {string} eventUrl Google Calendar event URL
+ * @returns {string} HTML button element
+ */
+function pgcal_createEventButton(eventUrl) {
+  if (!eventUrl) return '';
+  
+  return `<button class="pgcal-event-btn" onclick="window.open('${eventUrl}', '_blank')" title="View Event in Google Calendar">View Event</button>`;
+}
+
+/**
+ * Create Join Classroom button for Google Meet
+ *
+ * @param {string} meetUrl Google Meet URL
+ * @returns {string} HTML button element
+ */
+function pgcal_createMeetButton(meetUrl) {
+  if (!meetUrl) return '';
+  
+  return `<button class="pgcal-meet-btn" onclick="window.open('${meetUrl}', '_blank')" title="Join Google Meet">Join Classroom</button>`;
 }
 
 /**

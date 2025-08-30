@@ -29,9 +29,51 @@ function pgcal_tippyRender(info, currCal) {
     pgcal_urlify(info.event.extendedProps.description)
   );
 
+  // Check for Google Meet link, Google Drive links, and event URL, add buttons to tooltip
+  const meetLink = pgcal_extractMeetLink(info.event);
+  const driveLinks = pgcal_extractDriveLinks(info.event);
+  const eventUrl = info.event.url;
+  
+  let buttonsHtml = '';
+  
+  if (driveLinks.length > 0) {
+    if (driveLinks.length === 1) {
+      buttonsHtml += `<button onclick="window.open('${driveLinks[0].url}', '_blank')" 
+              style="background-color: #34a853; color: white; border: none; border-radius: 4px; 
+                     padding: 6px 12px; font-size: 12px; cursor: pointer; margin-right: 8px;">
+        View Documents
+      </button>`;
+    } else {
+      const linksAction = driveLinks.map(link => `window.open('${link.url}', '_blank');`).join(' ');
+      buttonsHtml += `<button onclick="${linksAction}" 
+              style="background-color: #34a853; color: white; border: none; border-radius: 4px; 
+                     padding: 6px 12px; font-size: 12px; cursor: pointer; margin-right: 8px;">
+        View Documents (${driveLinks.length})
+      </button>`;
+    }
+  }
+  
+  if (meetLink) {
+    buttonsHtml += `<button onclick="window.open('${meetLink}', '_blank')" 
+            style="background-color: #4285f4; color: white; border: none; border-radius: 4px; 
+                   padding: 6px 12px; font-size: 12px; cursor: pointer; margin-right: 8px;">
+      Join Classroom
+    </button>`;
+  }
+  
+  if (eventUrl) {
+    buttonsHtml += `<button onclick="window.open('${eventUrl}', '_blank')" 
+            style="background-color: #9c27b0; color: white; border: none; border-radius: 4px; 
+                   padding: 6px 12px; font-size: 12px; cursor: pointer; margin-right: 8px;">
+      View Event
+    </button>`;
+  }
+  
+  const additionalButtons = buttonsHtml ? `<div style="margin-top: 10px;">${buttonsHtml}</div>` : '';
+
   toolContent += `<div class="toolloc">${pgcal_mapify(
     info.event.extendedProps.location
-  )} ${pgcal_addToGoogle(info.event.url)}</div>`;
+  )} ${pgcal_addToGoogle(info.event.url)}${additionalButtons}</div>`;
 
   tippy(info.el, {
     trigger: "click",

@@ -24,15 +24,124 @@
   white-space: normal;
 }
 
-.pgcal-branding {
-  color: grey;
-  font-size: 70%;
-  float: right;
+/* Google Meet, Documents, and Event button styling - List view only */
+.pgcal-meet-btn,
+.pgcal-docs-btn,
+.pgcal-event-btn {
+  border: none;
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 11px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background-color 0.2s ease;
+  text-decoration: none;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.pgcal-meet-btn {
+  background-color: #4285f4;
+  color: white;
+}
+
+.pgcal-meet-btn:hover {
+  background-color: #3367d6;
+  color: white;
+  text-decoration: none;
+}
+
+.pgcal-docs-btn {
+  background-color: #34a853;
+  color: white;
+}
+
+.pgcal-docs-btn:hover {
+  background-color: #2d8f47;
+  color: white;
+  text-decoration: none;
+}
+
+.pgcal-event-btn {
+  background-color: #9c27b0;
+  color: white;
+}
+
+.pgcal-event-btn:hover {
+  background-color: #7b1fa2;
+  color: white;
+  text-decoration: none;
+}
+
+.pgcal-meet-btn:focus,
+.pgcal-docs-btn:focus,
+.pgcal-event-btn:focus {
+  outline: none;
+}
+
+.pgcal-meet-btn:focus {
+  box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.3);
+}
+
+.pgcal-docs-btn:focus {
+  box-shadow: 0 0 0 2px rgba(52, 168, 83, 0.3);
+}
+
+.pgcal-event-btn:focus {
+  box-shadow: 0 0 0 2px rgba(156, 39, 176, 0.3);
+}
+
+/* Make sure the button doesn't interfere with event layout */
+.fc-event-main-frame {
+  position: relative;
+}
+
+/* Specific styling for list views - position at far right of the row */
+.fc-list-event {
+  position: relative;
+}
+
+.fc-list-event .pgcal-buttons-container {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  margin: 0;
+  flex-direction: row;
+  align-items: center;
+  display: flex;
+  gap: 4px;
+  z-index: 10;
+  line-height: 1;
+}
+
+/* Add padding to list event content to prevent overlap with buttons */
+.fc-list-event .fc-list-event-title,
+.fc-list-event .fc-list-event-time {
+  padding-right: 190px; /* Space for all three buttons */
 }
 
 @media (max-width: 767px) {
   .fc-toolbar.fc-header-toolbar {
     display: flex;
     flex-direction: column;
+  }
+  
+  .pgcal-meet-btn,
+  .pgcal-docs-btn,
+  .pgcal-event-btn {
+    font-size: 10px;
+    padding: 1px 4px;
+  }
+  
+  .fc-list-event .pgcal-buttons-container {
+    right: 5px;
+    gap: 2px;
+  }
+  
+  /* Reduce padding on mobile */
+  .fc-list-event .fc-list-event-title,
+  .fc-list-event .fc-list-event-time {
+    padding-right: 170px;
   }
 }
