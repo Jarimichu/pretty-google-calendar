@@ -395,6 +395,61 @@ function pgcal_createMeetButton(meetUrl) {
 }
 
 /**
+ * Add description row under the event in list view
+ *
+ * @param {object} info Event info object from FullCalendar
+ * @param {HTMLElement} eventEl Event element
+ */
+function pgcal_addDescriptionRow(info, eventEl) {
+  // Get the description from the event
+  let description = '';
+  
+  // Check for description in various places
+  if (info.event.extendedProps && info.event.extendedProps.description) {
+    description = info.event.extendedProps.description;
+  } else if (info.event.description) {
+    description = info.event.description;
+  }
+  
+  // Only proceed if there's a description
+  if (!description || description.trim() === '') {
+    return;
+  }
+  
+  // Clean and format the description
+  description = description.trim();
+  // Convert URLs to links and line breaks to <br>
+  description = pgcal_urlify(description);
+  description = pgcal_breakify(description);
+  
+  // Find the list event row
+  const listEventRow = eventEl.closest('.fc-list-event');
+  if (!listEventRow) {
+    return;
+  }
+  
+  // Check if description row already exists
+  if (listEventRow.nextElementSibling && listEventRow.nextElementSibling.classList.contains('pgcal-description-row')) {
+    return;
+  }
+  
+  // Create the description row
+  const descriptionRow = document.createElement('tr');
+  descriptionRow.className = 'pgcal-description-row fc-list-event';
+  
+  // Create the description cell that spans all columns
+  const descriptionCell = document.createElement('td');
+  descriptionCell.className = 'pgcal-description-cell';
+  descriptionCell.colSpan = listEventRow.children.length;
+  descriptionCell.innerHTML = `<div class="pgcal-description-content">${description}</div>`;
+  
+  descriptionRow.appendChild(descriptionCell);
+  
+  // Insert the description row after the current event row
+  listEventRow.parentNode.insertBefore(descriptionRow, listEventRow.nextSibling);
+}
+
+/**
  * Merge arrays overriding arguments
  *
  */

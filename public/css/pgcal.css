@@ -121,7 +121,41 @@
   padding-right: 190px; /* Space for all three buttons */
 }
 
+/* Description row styling */
+.pgcal-description-row {
+  background-color: rgba(0, 0, 0, 0.02) !important;
+  border-top: none !important;
+}
+
+.pgcal-description-cell {
+  padding: 8px 15px 12px 30px !important; /* Left indent to show it's a sub-item */
+  font-size: 0.9em;
+  color: #666;
+  line-height: 1.4;
+  border: none !important;
+}
+
+.pgcal-description-content {
+  max-width: none;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.pgcal-description-content a {
+  color: #1976d2;
+  text-decoration: underline;
+}
+
+.pgcal-description-content a:hover {
+  text-decoration: none;
+}
+
 @media (max-width: 767px) {
+  .pgcal-description-cell {
+    padding: 6px 10px 8px 20px !important;
+    font-size: 0.85em;
+  }
+  
   .fc-toolbar.fc-header-toolbar {
     display: flex;
     flex-direction: column;

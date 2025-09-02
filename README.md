@@ -76,6 +76,9 @@ Sets the visibility of the `Today` button. Options: `true` and `false`. Defaults
 `show_title="true"` \
 Sets the visibility of the calendar `title`. Options: `true` and `false`. Defaults to `true`.
 
+`show_description="false"` \
+Sets the visibility of event descriptions in list view. When enabled, event descriptions will be displayed in a new row underneath each event, slightly indented to show it's a sub-item. Options: `true` and `false`. Defaults to `false`.
+
 `id_hash=random` \
 Sets the ID hash for a calendar. If you have multiple calendars on a page and need to style them, you can set this to a permanent code. Otherwise, it'll randomly generate each load. (Note: as of v2.0.0 this can only be alphanumeric.)
 

@@ -130,6 +130,11 @@ async function pgcal_render_calendar(pgcalSettings, ajaxurl) {
             listEventRow.appendChild(buttonsContainer);
           }
         }
+        
+        // Add description row if enabled
+        if (pgcalSettings["show_description"] === "true") {
+          pgcal_addDescriptionRow(info, eventEl);
+        }
       }
     },
 
