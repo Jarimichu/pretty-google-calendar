@@ -79,6 +79,9 @@ Sets the visibility of the calendar `title`. Options: `true` and `false`. Defaul
 `show_description="false"` \
 Sets the visibility of event descriptions in list view. When enabled, event descriptions will be displayed in a new row underneath each event, slightly indented to show it's a sub-item. Options: `true` and `false`. Defaults to `false`.
 
+`hide_meet_links="true"` \
+Controls whether Google Meet links are hidden from event descriptions when `show_description` is enabled. When set to `true`, Meet links will be removed from description text since they're already available as "Join Classroom" buttons. Options: `true` and `false`. Defaults to `true`.
+
 `id_hash=random` \
 Sets the ID hash for a calendar. If you have multiple calendars on a page and need to style them, you can set this to a permanent code. Otherwise, it'll randomly generate each load. (Note: as of v2.0.0 this can only be alphanumeric.)
 

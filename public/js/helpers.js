@@ -125,6 +125,22 @@ function pgcal_is_mobile(width = 768) {
 }
 
 /**
+ * Remove Google Meet links from text
+ *
+ * @param {string} text Text containing potential Meet links
+ * @returns {string} Text with Meet links removed
+ */
+function pgcal_removeMeetLinks(text) {
+  if (!text) return '';
+  
+  // Google Meet URL patterns (both HTTP and HTTPS)
+  const meetRegex = /https?:\/\/meet\.google\.com\/[a-z0-9-]+/gi;
+  
+  // Remove Meet links and clean up any extra whitespace
+  return text.replace(meetRegex, '').replace(/\s+/g, ' ').trim();
+}
+
+/**
  * Detect URLs and encase them in <a>. Ignores existing <a> tags.
  *
  * @param {*} text
@@ -399,8 +415,9 @@ function pgcal_createMeetButton(meetUrl) {
  *
  * @param {object} info Event info object from FullCalendar
  * @param {HTMLElement} eventEl Event element
+ * @param {object} settings Calendar settings object
  */
-function pgcal_addDescriptionRow(info, eventEl) {
+function pgcal_addDescriptionRow(info, eventEl, settings) {
   // Get the description from the event
   let description = '';
   
@@ -418,6 +435,10 @@ function pgcal_addDescriptionRow(info, eventEl) {
   
   // Clean and format the description
   description = description.trim();
+  // Remove Google Meet links from description if enabled
+  if (settings && pgcal_is_truthy(settings["hide_meet_links"])) {
+    description = pgcal_removeMeetLinks(description);
+  }
   // Convert URLs to links and line breaks to <br>
   description = pgcal_urlify(description);
   description = pgcal_breakify(description);

@@ -3,9 +3,8 @@
 Plugin Name: Pretty Google Calendar for Venture Upward
 Plugin URI: https://github.com/Jarimichu/pretty-google-calendar
 Description: A Simple Calendar for Venture Upward Live Classes
-Version: 1.1.0
+Version: 1.1.1
 Author: Jarimichu
-Author URI: http://jaredbsmith.com
 Text Domain: pretty-google-calendar
 */
 /*  Copyright 2020 LBell
@@ -25,7 +24,7 @@ Text Domain: pretty-google-calendar
 */
 
 
-define('PGCAL_VER', "1.1.0");
+define('PGCAL_VER', "1.1.1");
 define('PGCAL_DIR', plugin_dir_path(__FILE__)); // Trailing slash
 define('PGCAL_TEMPLATE_DIR', PGCAL_DIR . 'templates/');
 define('PGCAL_URL', plugin_dir_url(__FILE__));

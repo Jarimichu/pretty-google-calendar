@@ -133,7 +133,7 @@ async function pgcal_render_calendar(pgcalSettings, ajaxurl) {
         
         // Add description row if enabled
         if (pgcalSettings["show_description"] === "true") {
-          pgcal_addDescriptionRow(info, eventEl);
+          pgcal_addDescriptionRow(info, eventEl, pgcalSettings);
         }
       }
     },

@@ -18,6 +18,7 @@ function pgcal_shortcode($atts) {
       'show_today_button'          => "true",
       'show_title'                 => "true",
       'show_description'           => "false",
+      'hide_meet_links'            => "true",
       'id_hash'                    => bin2hex(random_bytes(5)),
       'use_tooltip'                => isset($globalSettings['use_tooltip']) ? "true" : "false",
       'no_link'                    => isset($globalSettings['no_link']) ? "true" : "false",
