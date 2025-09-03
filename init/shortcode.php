@@ -19,9 +19,9 @@ function pgcal_shortcode($atts) {
       'show_title'                 => isset($globalSettings['default_show_title']) ? $globalSettings['default_show_title'] : "true",
       'show_description'           => isset($globalSettings['default_show_description']) ? $globalSettings['default_show_description'] : "false",
       'hide_meet_links'            => isset($globalSettings['default_hide_meet_links']) ? $globalSettings['default_hide_meet_links'] : "true",
-      'use_tooltip'                => isset($globalSettings['default_use_tooltip']) ? $globalSettings['default_use_tooltip'] : "false",
-      'no_link'                    => isset($globalSettings['default_no_link']) ? $globalSettings['default_no_link'] : "true",
       'id_hash'                    => bin2hex(random_bytes(5)),
+      'use_tooltip'                => isset($globalSettings['default_use_tooltip']) ? $globalSettings['default_use_tooltip'] : (isset($globalSettings['use_tooltip']) ? "false" : "true"),
+      'no_link'                    => isset($globalSettings['default_no_link']) ? $globalSettings['default_no_link'] : (isset($globalSettings['no_link']) ? "false" : "true"),
       'fc_args'                    => '{}',
     ),
     $atts
@@ -62,7 +62,7 @@ function pgcal_shortcode($atts) {
         pgcal_render_calendar(settings, ajaxurl);
       }
 
-      pgcal_inlineScript(" . json_encode($pgcalSettings) . );
+      pgcal_inlineScript(" . json_encode($pgcalSettings) . ");
     });
   ";
   wp_add_inline_script('pgcal_loader', $script);
