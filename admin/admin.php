@@ -243,12 +243,8 @@ class pgcalSettings {
    */
   public function pgcal_pring_main_info() {
     printf(
-      '<p>%s [pretty_google_calendar gcal="address@group.calendar.google.com"] </p>
-      <p>%s <a href="https://fullcalendar.io/docs/google-calendar">https://fullcalendar.io/docs/google-calendar</a></p>
-      <p>%s <a href="https://wordpress.org/plugins/pretty-google-calendar/#installation">https://wordpress.org/plugins/pretty-google-calendar/#installation</a></p>',
-      esc_html__("Shortcode Usage:", "pretty-google-calendar"),
-      esc_html__("You must have a google calendar API. See:", "pretty-google-calendar"),
-      esc_html__("For shortcode usage and options, see:", "pretty-google-calendar")
+      '<p>%s</p>',
+      esc_html__('You must have your Google Calendar API setup to use this plugin. Please enter your key below:', 'pretty-google-calendar')
     );
   }
 
@@ -267,7 +263,7 @@ class pgcalSettings {
    */
   public function pgcal_gapi_callback() {
     printf(
-      '<input type="text" id="google_api" name="pgcal_settings[google_api]" value="%s" style="width: 300px;" />',
+      '<input type="text" id="google_api" name="pgcal_settings[google_api]" value="%s" style="width: 600px;" />',
       isset($this->options['google_api']) ? esc_attr($this->options['google_api']) : ''
     );
   }
