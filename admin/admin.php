@@ -19,7 +19,6 @@ class pgcalSettings {
    * Add options page
    */
   public function pgcal_add_plugin_page() {
-    // This page will be under "Settings"
     add_options_page(
       esc_attr__('Settings Admin', 'pretty-google-calendar'),
       esc_attr__('Pretty Google Calendar Settings', 'pretty-google-calendar'),
@@ -29,29 +28,11 @@ class pgcalSettings {
     );
   }
 
-  /**
-   * Options page callback
-   */
   public function pgcal_create_admin_page() {
-    // Set class property
     $this->options = get_option('pgcal_settings');
 ?>
     <div class="pgcal-settings-header">
-
-      <div class="pgcal-logo">
-        <svg version="1.1" width="141" height="146" viewBox="0 0 141 146" xmlns="http://www.w3.org/2000/svg">
-          <path d="M13.3 126.4v-89c0-2.4.9-4.5 2.6-6.3s3.8-2.6 6.2-2.6h8.8v-6.7c0-3.1 1.1-5.7 3.2-7.9 2.2-2.2 4.7-3.3 7.8-3.3h4.4c3 0 5.6 1.1 7.8 3.3s3.2 4.8 3.2 7.9v6.7h26.4v-6.7c0-3.1 1.1-5.7 3.2-7.9 2.2-2.2 4.7-3.3 7.8-3.3h4.4c3 0 5.6 1.1 7.8 3.3s3.2 4.8 3.2 7.9v6.7h8.8c2.4 0 4.4.9 6.2 2.6 1.7 1.8 2.6 3.8 2.6 6.3v88.9c0 2.4-.9 4.5-2.6 6.3s-3.8 2.6-6.2 2.6H22.1c-2.4 0-4.4-.9-6.2-2.6-1.7-1.8-2.6-3.8-2.6-6.2zm8.8 0h96.8V55.2H22.1v71.2zm17.6-84.5c0 .6.2 1.2.6 1.6s.9.6 1.6.6h4.4c.6 0 1.2-.2 1.6-.6s.6-.9.6-1.6v-20c0-.6-.2-1.2-.6-1.6s-.9-.6-1.6-.6h-4.4c-.6 0-1.2.2-1.6.6s-.6 1-.6 1.6v20zm52.8 0c0 .6.2 1.2.6 1.6s.9.6 1.6.6h4.4c.6 0 1.2-.2 1.6-.6s.6-.9.6-1.6v-20c0-.6-.2-1.2-.6-1.6s-.9-.6-1.6-.6h-4.4c-.6 0-1.2.2-1.6.6s-.6 1-.6 1.6v20z" />
-          <text transform="scale(.98902 1.0111)" x="60" y="69.305733" font-family="Z003" font-size="19.485px" letter-spacing="0" stroke-width="1.218" text-anchor="middle" word-spacing="0" style="line-height:1.25" xml:space="preserve">
-            <tspan x="60" y="69.305733">Pretty</tspan>
-            <tspan x="60" y="95.274574">Google</tspan>
-            <tspan x="65" y="121.24342">Calendar</tspan>
-          </text>
-        </svg>
-      </div>
-      <h1><?php echo esc_html__('Pretty Google Calendar Settings', 'pretty-google-calendar') ?></h1>
-      <p>
-        <button><a href="https://github.com/sponsors/lbell"><?php echo esc_html__('Sponsor', 'pretty-google-calendar') ?></a></button>
-      </p>
+      <h1><?php echo esc_html__('Google Calendar API Settings', 'pretty-google-calendar') ?></h1>
     </div>
     <form method="post" action="options.php">
       <?php
@@ -82,6 +63,13 @@ class pgcalSettings {
       'pgcal-setting-admin' // Page
     );
 
+    add_settings_section(
+      'pgcal-defaults-settings',
+      esc_attr__('Default Shortcode Settings', 'pretty-google-calendar'),
+      array($this, 'pgcal_print_defaults_info'), // Callback
+      'pgcal-setting-admin' // Page
+    );
+
     add_settings_field(
       'google_api',
       esc_attr__('Google API', 'pretty-google-calendar'),
@@ -90,21 +78,110 @@ class pgcalSettings {
       'pgcal-main-settings' // Section
     );
 
-    // add_settings_field(
-    //   'use_tooltip',
-    //   esc_attr__('Use Tooltip (Migrating to shortcode attribute use_tooltip)', 'pretty-google-calendar'),
-    //   array($this, 'pgcal_tooltip_callback'),
-    //   'pgcal-setting-admin',
-    //   'pgcal-main-settings'
-    // );
+    // Default shortcode settings
+    add_settings_field(
+      'default_locale',
+      esc_attr__('Default Locale', 'pretty-google-calendar'),
+      array($this, 'pgcal_default_locale_callback'),
+      'pgcal-setting-admin',
+      'pgcal-defaults-settings'
+    );
 
-    // add_settings_field(
-    //   'no_link',
-    //   esc_attr__('Disable Event Link (Migrating to shortcode attribute no_link)', 'pretty-google-calendar'),
-    //   array($this, 'pgcal_no_link_callback'),
-    //   'pgcal-setting-admin',
-    //   'pgcal-main-settings'
-    // );
+    add_settings_field(
+      'default_list_type',
+      esc_attr__('Default List Type', 'pretty-google-calendar'),
+      array($this, 'pgcal_default_list_type_callback'),
+      'pgcal-setting-admin',
+      'pgcal-defaults-settings'
+    );
+
+    add_settings_field(
+      'default_custom_list_button',
+      esc_attr__('Default Custom List Button Label', 'pretty-google-calendar'),
+      array($this, 'pgcal_default_custom_list_button_callback'),
+      'pgcal-setting-admin',
+      'pgcal-defaults-settings'
+    );
+
+    add_settings_field(
+      'default_custom_days',
+      esc_attr__('Default Custom Days', 'pretty-google-calendar'),
+      array($this, 'pgcal_default_custom_days_callback'),
+      'pgcal-setting-admin',
+      'pgcal-defaults-settings'
+    );
+
+    add_settings_field(
+      'default_views',
+      esc_attr__('Default Views', 'pretty-google-calendar'),
+      array($this, 'pgcal_default_views_callback'),
+      'pgcal-setting-admin',
+      'pgcal-defaults-settings'
+    );
+
+    add_settings_field(
+      'default_initial_view',
+      esc_attr__('Default Initial View', 'pretty-google-calendar'),
+      array($this, 'pgcal_default_initial_view_callback'),
+      'pgcal-setting-admin',
+      'pgcal-defaults-settings'
+    );
+
+    add_settings_field(
+      'default_enforce_listview_on_mobile',
+      esc_attr__('Default Enforce List View on Mobile', 'pretty-google-calendar'),
+      array($this, 'pgcal_default_enforce_listview_on_mobile_callback'),
+      'pgcal-setting-admin',
+      'pgcal-defaults-settings'
+    );
+
+    add_settings_field(
+      'default_show_today_button',
+      esc_attr__('Default Show Today Button', 'pretty-google-calendar'),
+      array($this, 'pgcal_default_show_today_button_callback'),
+      'pgcal-setting-admin',
+      'pgcal-defaults-settings'
+    );
+
+    add_settings_field(
+      'default_show_title',
+      esc_attr__('Default Show Title', 'pretty-google-calendar'),
+      array($this, 'pgcal_default_show_title_callback'),
+      'pgcal-setting-admin',
+      'pgcal-defaults-settings'
+    );
+
+    add_settings_field(
+      'default_show_description',
+      esc_attr__('Default Show Description', 'pretty-google-calendar'),
+      array($this, 'pgcal_default_show_description_callback'),
+      'pgcal-setting-admin',
+      'pgcal-defaults-settings'
+    );
+
+    add_settings_field(
+      'default_hide_meet_links',
+      esc_attr__('Default Hide Meet Links', 'pretty-google-calendar'),
+      array($this, 'pgcal_default_hide_meet_links_callback'),
+      'pgcal-setting-admin',
+      'pgcal-defaults-settings'
+    );
+
+    add_settings_field(
+      'default_use_tooltip',
+      esc_attr__('Default Use Tooltip', 'pretty-google-calendar'),
+      array($this, 'pgcal_default_use_tooltip_callback'),
+      'pgcal-setting-admin',
+      'pgcal-defaults-settings'
+    );
+
+    add_settings_field(
+      'default_no_link',
+      esc_attr__('Default No Link', 'pretty-google-calendar'),
+      array($this, 'pgcal_default_no_link_callback'),
+      'pgcal-setting-admin',
+      'pgcal-defaults-settings'
+    );
   }
 
   /**
@@ -114,15 +191,49 @@ class pgcalSettings {
    */
   public function pgcal_sanitize($input) {
     $sanitized_input = array();
+    
     if (isset($input['google_api']))
-      // TODO test api?
-      $sanitized_input['google_api'] = $input['google_api'];
+      $sanitized_input['google_api'] = sanitize_text_field($input['google_api']);
 
-    // if (isset($input['use_tooltip']))
-    //   $sanitized_input['use_tooltip'] = sanitize_text_field($input['use_tooltip']);
+    // Default shortcode settings
+    if (isset($input['default_locale']))
+      $sanitized_input['default_locale'] = sanitize_text_field($input['default_locale']);
 
-    // if (isset($input['no_link']))
-    //   $sanitized_input['no_link'] = sanitize_text_field($input['no_link']);
+    if (isset($input['default_list_type']))
+      $sanitized_input['default_list_type'] = sanitize_text_field($input['default_list_type']);
+
+    if (isset($input['default_custom_list_button']))
+      $sanitized_input['default_custom_list_button'] = sanitize_text_field($input['default_custom_list_button']);
+
+    if (isset($input['default_custom_days']))
+      $sanitized_input['default_custom_days'] = absint($input['default_custom_days']);
+
+    if (isset($input['default_views']))
+      $sanitized_input['default_views'] = sanitize_text_field($input['default_views']);
+
+    if (isset($input['default_initial_view']))
+      $sanitized_input['default_initial_view'] = sanitize_text_field($input['default_initial_view']);
+
+    if (isset($input['default_enforce_listview_on_mobile']))
+      $sanitized_input['default_enforce_listview_on_mobile'] = sanitize_text_field($input['default_enforce_listview_on_mobile']);
+
+    if (isset($input['default_show_today_button']))
+      $sanitized_input['default_show_today_button'] = sanitize_text_field($input['default_show_today_button']);
+
+    if (isset($input['default_show_title']))
+      $sanitized_input['default_show_title'] = sanitize_text_field($input['default_show_title']);
+
+    if (isset($input['default_show_description']))
+      $sanitized_input['default_show_description'] = sanitize_text_field($input['default_show_description']);
+
+    if (isset($input['default_hide_meet_links']))
+      $sanitized_input['default_hide_meet_links'] = sanitize_text_field($input['default_hide_meet_links']);
+
+    if (isset($input['default_use_tooltip']))
+      $sanitized_input['default_use_tooltip'] = sanitize_text_field($input['default_use_tooltip']);
+
+    if (isset($input['default_no_link']))
+      $sanitized_input['default_no_link'] = sanitize_text_field($input['default_no_link']);
 
     return $sanitized_input;
   }
@@ -134,12 +245,20 @@ class pgcalSettings {
     printf(
       '<p>%s [pretty_google_calendar gcal="address@group.calendar.google.com"] </p>
       <p>%s <a href="https://fullcalendar.io/docs/google-calendar">https://fullcalendar.io/docs/google-calendar</a></p>
-      <p>%s <a href="https://wordpress.org/plugins/pretty-google-calendar/#installation">https://wordpress.org/plugins/pretty-google-calendar/#installation</a></p>
-      <p>%s</p>',
+      <p>%s <a href="https://wordpress.org/plugins/pretty-google-calendar/#installation">https://wordpress.org/plugins/pretty-google-calendar/#installation</a></p>',
       esc_html__("Shortcode Usage:", "pretty-google-calendar"),
       esc_html__("You must have a google calendar API. See:", "pretty-google-calendar"),
-      esc_html__("For shortcode usage and options, see:", "pretty-google-calendar"),
-      esc_html__("Note: the tooltip and link settings have been moved to shortcode arguments for styling individual calendars.", "pretty-google-calendar")
+      esc_html__("For shortcode usage and options, see:", "pretty-google-calendar")
+    );
+  }
+
+  /**
+   * Print the defaults Section text
+   */
+  public function pgcal_print_defaults_info() {
+    printf(
+      '<p>%s</p>',
+      esc_html__("Set default values for shortcode parameters. These will be used when the parameter is not specified in the shortcode.", "pretty-google-calendar")
     );
   }
 
@@ -148,8 +267,203 @@ class pgcalSettings {
    */
   public function pgcal_gapi_callback() {
     printf(
-      '<input type="text" id="google_api" name="pgcal_settings[google_api]" value="%s" />',
+      '<input type="text" id="google_api" name="pgcal_settings[google_api]" value="%s" style="width: 300px;" />',
       isset($this->options['google_api']) ? esc_attr($this->options['google_api']) : ''
+    );
+  }
+
+  public function pgcal_default_locale_callback() {
+    $value = isset($this->options['default_locale']) ? esc_attr($this->options['default_locale']) : 'en';
+    printf(
+      '<input type="text" id="default_locale" name="pgcal_settings[default_locale]" value="%s" placeholder="en" />
+      <p class="description">%s</p>',
+      $value,
+      esc_html__('Language locale code (e.g., en, es, fr, de)', 'pretty-google-calendar')
+    );
+  }
+
+  public function pgcal_default_list_type_callback() {
+    $value = isset($this->options['default_list_type']) ? esc_attr($this->options['default_list_type']) : 'listCustom';
+    $options = array(
+      'listCustom' => 'Custom List',
+      'listDay' => 'List Day',
+      'listWeek' => 'List Week', 
+      'listMonth' => 'List Month',
+      'listYear' => 'List Year'
+    );
+    
+    echo '<select id="default_list_type" name="pgcal_settings[default_list_type]">';
+    foreach ($options as $key => $label) {
+      printf(
+        '<option value="%s" %s>%s</option>',
+        esc_attr($key),
+        selected($value, $key, false),
+        esc_html($label)
+      );
+    }
+    echo '</select>';
+  }
+
+  public function pgcal_default_custom_list_button_callback() {
+    $value = isset($this->options['default_custom_list_button']) ? esc_attr($this->options['default_custom_list_button']) : 'list';
+    printf(
+      '<input type="text" id="default_custom_list_button" name="pgcal_settings[default_custom_list_button]" value="%s" placeholder="list" />
+      <p class="description">%s</p>',
+      $value,
+      esc_html__('Label for the custom list button', 'pretty-google-calendar')
+    );
+  }
+
+  public function pgcal_default_custom_days_callback() {
+    $value = isset($this->options['default_custom_days']) ? absint($this->options['default_custom_days']) : 28;
+    printf(
+      '<input type="number" id="default_custom_days" name="pgcal_settings[default_custom_days]" value="%d" min="1" max="365" />
+      <p class="description">%s</p>',
+      $value,
+      esc_html__('Number of days to show in custom list view', 'pretty-google-calendar')
+    );
+  }
+
+  public function pgcal_default_views_callback() {
+    $value = isset($this->options['default_views']) ? esc_attr($this->options['default_views']) : 'dayGridMonth, listCustom';
+    printf(
+      '<input type="text" id="default_views" name="pgcal_settings[default_views]" value="%s" placeholder="dayGridMonth, listCustom" style="width: 300px;" />
+      <p class="description">%s</p>',
+      $value,
+      esc_html__('Comma-separated list of available views (e.g., dayGridMonth, listCustom, dayGridWeek)', 'pretty-google-calendar')
+    );
+  }
+
+  public function pgcal_default_initial_view_callback() {
+    $value = isset($this->options['default_initial_view']) ? esc_attr($this->options['default_initial_view']) : 'dayGridMonth';
+    $options = array(
+      'dayGridMonth' => 'Month Grid',
+      'dayGridWeek' => 'Week Grid',
+      'dayGridDay' => 'Day Grid',
+      'listCustom' => 'Custom List',
+      'listDay' => 'List Day',
+      'listWeek' => 'List Week',
+      'listMonth' => 'List Month',
+      'listYear' => 'List Year'
+    );
+    
+    echo '<select id="default_initial_view" name="pgcal_settings[default_initial_view]">';
+    foreach ($options as $key => $label) {
+      printf(
+        '<option value="%s" %s>%s</option>',
+        esc_attr($key),
+        selected($value, $key, false),
+        esc_html($label)
+      );
+    }
+    echo '</select>';
+  }
+
+  public function pgcal_default_enforce_listview_on_mobile_callback() {
+    $value = isset($this->options['default_enforce_listview_on_mobile']) ? esc_attr($this->options['default_enforce_listview_on_mobile']) : 'true';
+    printf(
+      '<select id="default_enforce_listview_on_mobile" name="pgcal_settings[default_enforce_listview_on_mobile]">
+        <option value="true" %s>%s</option>
+        <option value="false" %s>%s</option>
+      </select>
+      <p class="description">%s</p>',
+      selected($value, 'true', false),
+      esc_html__('True', 'pretty-google-calendar'),
+      selected($value, 'false', false),
+      esc_html__('False', 'pretty-google-calendar'),
+      esc_html__('Switch to list view on mobile devices', 'pretty-google-calendar')
+    );
+  }
+
+  public function pgcal_default_show_today_button_callback() {
+    $value = isset($this->options['default_show_today_button']) ? esc_attr($this->options['default_show_today_button']) : 'true';
+    printf(
+      '<select id="default_show_today_button" name="pgcal_settings[default_show_today_button]">
+        <option value="true" %s>%s</option>
+        <option value="false" %s>%s</option>
+      </select>',
+      selected($value, 'true', false),
+      esc_html__('True', 'pretty-google-calendar'),
+      selected($value, 'false', false),
+      esc_html__('False', 'pretty-google-calendar')
+    );
+  }
+
+  public function pgcal_default_show_title_callback() {
+    $value = isset($this->options['default_show_title']) ? esc_attr($this->options['default_show_title']) : 'true';
+    printf(
+      '<select id="default_show_title" name="pgcal_settings[default_show_title]">
+        <option value="true" %s>%s</option>
+        <option value="false" %s>%s</option>
+      </select>',
+      selected($value, 'true', false),
+      esc_html__('True', 'pretty-google-calendar'),
+      selected($value, 'false', false),
+      esc_html__('False', 'pretty-google-calendar')
+    );
+  }
+
+  public function pgcal_default_show_description_callback() {
+    $value = isset($this->options['default_show_description']) ? esc_attr($this->options['default_show_description']) : 'false';
+    printf(
+      '<select id="default_show_description" name="pgcal_settings[default_show_description]">
+        <option value="true" %s>%s</option>
+        <option value="false" %s>%s</option>
+      </select>
+      <p class="description">%s</p>',
+      selected($value, 'true', false),
+      esc_html__('True', 'pretty-google-calendar'),
+      selected($value, 'false', false),
+      esc_html__('False', 'pretty-google-calendar'),
+      esc_html__('Show event descriptions in list view', 'pretty-google-calendar')
+    );
+  }
+
+  public function pgcal_default_hide_meet_links_callback() {
+    $value = isset($this->options['default_hide_meet_links']) ? esc_attr($this->options['default_hide_meet_links']) : 'true';
+    printf(
+      '<select id="default_hide_meet_links" name="pgcal_settings[default_hide_meet_links]">
+        <option value="true" %s>%s</option>
+        <option value="false" %s>%s</option>
+      </select>
+      <p class="description">%s</p>',
+      selected($value, 'true', false),
+      esc_html__('True', 'pretty-google-calendar'),
+      selected($value, 'false', false),
+      esc_html__('False', 'pretty-google-calendar'),
+      esc_html__('Hide Google Meet links from descriptions (they will still appear as buttons)', 'pretty-google-calendar')
+    );
+  }
+
+  public function pgcal_default_use_tooltip_callback() {
+    $value = isset($this->options['default_use_tooltip']) ? esc_attr($this->options['default_use_tooltip']) : 'false';
+    printf(
+      '<select id="default_use_tooltip" name="pgcal_settings[default_use_tooltip]">
+        <option value="true" %s>%s</option>
+        <option value="false" %s>%s</option>
+      </select>
+      <p class="description">%s</p>',
+      selected($value, 'true', false),
+      esc_html__('True', 'pretty-google-calendar'),
+      selected($value, 'false', false),
+      esc_html__('False', 'pretty-google-calendar'),
+      esc_html__('Show event details in a tooltip when clicking on events', 'pretty-google-calendar')
+    );
+  }
+
+  public function pgcal_default_no_link_callback() {
+    $value = isset($this->options['default_no_link']) ? esc_attr($this->options['default_no_link']) : 'false';
+    printf(
+      '<select id="default_no_link" name="pgcal_settings[default_no_link]">
+        <option value="true" %s>%s</option>
+        <option value="false" %s>%s</option>
+      </select>
+      <p class="description">%s</p>',
+      selected($value, 'true', false),
+      esc_html__('True', 'pretty-google-calendar'),
+      selected($value, 'false', false),
+      esc_html__('False', 'pretty-google-calendar'),
+      esc_html__('Disable links to calendar.google.com when clicking on events', 'pretty-google-calendar')
     );
   }
 

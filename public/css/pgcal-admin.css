@@ -52,3 +52,38 @@
 .settings_page_pgcal-setting-admin button a {
   text-decoration: none;
 }
+
+/* Default settings styling */
+.settings_page_pgcal-setting-admin .form-table {
+  margin-top: 20px;
+}
+
+.settings_page_pgcal-setting-admin .form-table th {
+  width: 200px;
+}
+
+.settings_page_pgcal-setting-admin .form-table td {
+  padding: 15px 10px;
+}
+
+.settings_page_pgcal-setting-admin .form-table select,
+.settings_page_pgcal-setting-admin .form-table input[type="text"],
+.settings_page_pgcal-setting-admin .form-table input[type="number"] {
+  min-width: 200px;
+}
+
+.settings_page_pgcal-setting-admin .description {
+  font-style: italic;
+  color: #666;
+  margin-top: 5px;
+}
+
+.settings_page_pgcal-setting-admin h2 {
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
+  margin-top: 30px;
+}
+
+.settings_page_pgcal-setting-admin h2:first-of-type {
+  margin-top: 20px;
+}

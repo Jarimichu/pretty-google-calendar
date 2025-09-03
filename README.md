@@ -38,9 +38,12 @@ How it works:
 1. Activate `Pretty Google Calendar` through the 'Plugins' menu in WordPress dashboard.
 1. Obtain your Google Calendar API key (see below)
 1. Add the API key to Settings -> Pretty Google Calendar Settings
+1. Optionally, configure default values for shortcode parameters in the settings page
 1. Use the shortcode `[pretty_google_calendar gcal="calendarID@group.calendar.google.com"]` directly in your page or post content.
 
 ### Shortcode Options
+
+All shortcode parameters listed below can have their default values configured in **Settings -> Pretty Google Calendar Settings**. Individual shortcodes can still override these defaults by specifying the parameter explicitly.
 
 `gcal="CalendarID,CalendarID"`\
 Calendar ID of the desired google calendar (note: must be set to 'Make available to public'. To display multiple calendars, separate ID's by a comma. (Note: calendars must fall under same API access.))
@@ -96,6 +99,31 @@ Allows you to override or impliment just about any FullCalendar argument (with s
 
 Note: any argument that contains `[]` will fail due to Wordpress' parsing of shortcodes. No workaround currently.
 Note: this is experimental - things may break.
+
+### Admin Settings
+
+The plugin includes a comprehensive settings page at **Settings -> Pretty Google Calendar Settings** where you can:
+
+1. **Configure your Google Calendar API key** (required)
+2. **Set default values for all shortcode parameters** including:
+   - Default locale (language)
+   - Default list type and view options
+   - Default button labels and display settings
+   - Default behavior for descriptions, tooltips, and links
+
+When you set defaults in the admin settings, you can use shorter shortcodes. For example, if you set the default locale to "es" and default views to "listCustom", you can simply use:
+
+```
+[pretty_google_calendar gcal="your-calendar-id"]
+```
+
+Instead of:
+
+```
+[pretty_google_calendar gcal="your-calendar-id" locale="es" views="listCustom"]
+```
+
+Individual shortcodes can still override any default by specifying the parameter explicitly.
 
 ### Styling Multiple Calendars
 
