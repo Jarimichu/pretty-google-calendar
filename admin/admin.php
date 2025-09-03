@@ -21,7 +21,7 @@ class pgcalSettings {
   public function pgcal_add_plugin_page() {
     add_options_page(
       esc_attr__('Settings Admin', 'pretty-google-calendar'),
-      esc_attr__('Pretty Google Calendar Settings', 'pretty-google-calendar'),
+      esc_attr__('Google Calendar API Settings', 'pretty-google-calendar'),
       'manage_options',
       'pgcal-setting-admin',
       array($this, 'pgcal_create_admin_page')
