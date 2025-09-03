@@ -136,8 +136,32 @@ function pgcal_removeMeetLinks(text) {
   // Google Meet URL patterns (both HTTP and HTTPS)
   const meetRegex = /https?:\/\/meet\.google\.com\/[a-z0-9-]+/gi;
   
-  // Remove Meet links and clean up any extra whitespace
-  return text.replace(meetRegex, '').replace(/\s+/g, ' ').trim();
+  // Also remove Meet links that might be wrapped in HTML tags
+  const meetLinkInATagRegex = /<a[^>]*href="https?:\/\/meet\.google\.com\/[a-z0-9-]+"[^>]*>.*?<\/a>/gi;
+  
+  // Remove Meet links (both plain URLs and those wrapped in anchor tags)
+  let cleanedText = text.replace(meetLinkInATagRegex, '').replace(meetRegex, '');
+  
+  // Remove empty HTML tags that might be left behind
+  cleanedText = cleanedText.replace(/<([^>]+)>\s*<\/\1>/g, '');
+  
+  // Remove multiple consecutive line breaks and replace with single line break
+  cleanedText = cleanedText.replace(/(\r?\n\s*){2,}/g, '\n');
+  
+  // Remove leading and trailing whitespace from each line
+  cleanedText = cleanedText.replace(/^[ \t]+|[ \t]+$/gm, '');
+  
+  // Remove empty lines
+  cleanedText = cleanedText.replace(/^\s*[\r\n]/gm, '');
+  
+  // Clean up any remaining multiple spaces
+  cleanedText = cleanedText.replace(/[ \t]+/g, ' ');
+  
+  // Remove empty paragraphs or divs
+  cleanedText = cleanedText.replace(/<(p|div)\s*>\s*<\/(p|div)>/gi, '');
+  
+  // Trim the entire string
+  return cleanedText.trim();
 }
 
 /**
@@ -435,13 +459,28 @@ function pgcal_addDescriptionRow(info, eventEl, settings) {
   
   // Clean and format the description
   description = description.trim();
+  
   // Remove Google Meet links from description if enabled
   if (settings && pgcal_is_truthy(settings["hide_meet_links"])) {
     description = pgcal_removeMeetLinks(description);
   }
+  
+  // After cleaning, check if there's still content
+  if (!description || description.trim() === '') {
+    return;
+  }
+  
   // Convert URLs to links and line breaks to <br>
   description = pgcal_urlify(description);
   description = pgcal_breakify(description);
+  
+  // Final cleanup to remove any leading/trailing <br> tags
+  description = description.replace(/^(<br\s*\/?>)+|(<br\s*\/?>)+$/gi, '');
+  
+  // If description is empty after all processing, don't add the row
+  if (!description || description.trim() === '') {
+    return;
+  }
   
   // Find the list event row
   const listEventRow = eventEl.closest('.fc-list-event');

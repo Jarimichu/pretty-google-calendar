@@ -139,6 +139,8 @@
   max-width: none;
   word-wrap: break-word;
   overflow-wrap: break-word;
+  margin: 0;
+  padding: 0;
 }
 
 .pgcal-description-content a {
@@ -148,6 +150,22 @@
 
 .pgcal-description-content a:hover {
   text-decoration: none;
+}
+
+/* Remove extra spacing from empty paragraphs and line breaks */
+.pgcal-description-content p:empty,
+.pgcal-description-content div:empty {
+  display: none;
+}
+
+.pgcal-description-content br:first-child,
+.pgcal-description-content br:last-child {
+  display: none;
+}
+
+/* Handle consecutive line breaks */
+.pgcal-description-content br + br {
+  display: none;
 }
 
 @media (max-width: 767px) {
