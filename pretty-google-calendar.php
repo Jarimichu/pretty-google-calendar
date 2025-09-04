@@ -1,31 +1,16 @@
 <?php
 /*
-Plugin Name: Pretty Google Calendar for Venture Upward
+Plugin Name: Google Calendar Integration for Venture Upward
 Plugin URI: https://github.com/Jarimichu/pretty-google-calendar
-Description: A Simple Calendar for Venture Upward Live Classes
-Version: 1.1.2
+Description: A Google Calendar API Integration modified for use with Venture Upward Live Classes.
+Version: 1.1.3
 Author: Jarimichu
 Text Domain: pretty-google-calendar
 */
-/*  Copyright 2020 LBell
-
-	This program is free software; you can redistribute it and/or modify
-	it under the terms of the GNU General Public License, version 2, as
-	published by the Free Software Foundation.
-
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
-
-	You should have received a copy of the GNU General Public License
-	along with this program; if not, write to the Free Software
-	Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-*/
 
 
-define('PGCAL_VER', "1.1.2");
-define('PGCAL_DIR', plugin_dir_path(__FILE__)); // Trailing slash
+define('PGCAL_VER', "1.1.3");
+define('PGCAL_DIR', plugin_dir_path(__FILE__));
 define('PGCAL_TEMPLATE_DIR', PGCAL_DIR . 'templates/');
 define('PGCAL_URL', plugin_dir_url(__FILE__));
 
