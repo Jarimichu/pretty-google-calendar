@@ -133,11 +133,11 @@ function pgcal_is_mobile(width = 768) {
 function pgcal_removeMeetLinks(text) {
   if (!text) return '';
   
-  // Google Meet URL patterns (both HTTP and HTTPS)
-  const meetRegex = /https?:\/\/meet\.google\.com\/[a-z0-9-]+/gi;
+  // Google Meet URL patterns (with or without protocol)
+  const meetRegex = /(?:https?:\/\/)?meet\.google\.com\/[a-z0-9-]+/gi;
   
   // Also remove Meet links that might be wrapped in HTML tags
-  const meetLinkInATagRegex = /<a[^>]*href="https?:\/\/meet\.google\.com\/[a-z0-9-]+"[^>]*>.*?<\/a>/gi;
+  const meetLinkInATagRegex = /<a[^>]*href="(?:https?:\/\/)?meet\.google\.com\/[a-z0-9-]+"[^>]*>.*?<\/a>/gi;
   
   // Remove Meet links (both plain URLs and those wrapped in anchor tags)
   let cleanedText = text.replace(meetLinkInATagRegex, '').replace(meetRegex, '');
@@ -259,8 +259,8 @@ function pgcal_addToGoogle(url) {
  * @returns {string|null} Google Meet URL if found, null otherwise
  */
 function pgcal_extractMeetLink(event) {
-  // Google Meet URL patterns (both HTTP and HTTPS)
-  const meetRegex = /https?:\/\/meet\.google\.com\/[a-z0-9-]+/gi;
+  // Google Meet URL patterns (with or without protocol)
+  const meetRegex = /(?:https?:\/\/)?meet\.google\.com\/[a-z0-9-]+/gi;
   
   // Check if there's a hangoutLink property (Google Calendar API)
   if (event.extendedProps && event.extendedProps.hangoutLink) {
@@ -286,7 +286,8 @@ function pgcal_extractMeetLink(event) {
   if (event.extendedProps && event.extendedProps.description) {
     const descriptionMatch = event.extendedProps.description.match(meetRegex);
     if (descriptionMatch) {
-      return descriptionMatch[0];
+      const meetUrl = descriptionMatch[0];
+      return meetUrl.startsWith('http') ? meetUrl : 'https://' + meetUrl;
     }
   }
   
@@ -294,7 +295,8 @@ function pgcal_extractMeetLink(event) {
   if (event.extendedProps && event.extendedProps.location) {
     const locationMatch = event.extendedProps.location.match(meetRegex);
     if (locationMatch) {
-      return locationMatch[0];
+      const meetUrl = locationMatch[0];
+      return meetUrl.startsWith('http') ? meetUrl : 'https://' + meetUrl;
     }
   }
   
@@ -302,7 +304,8 @@ function pgcal_extractMeetLink(event) {
   if (event.location) {
     const locationMatch = event.location.match(meetRegex);
     if (locationMatch) {
-      return locationMatch[0];
+      const meetUrl = locationMatch[0];
+      return meetUrl.startsWith('http') ? meetUrl : 'https://' + meetUrl;
     }
   }
   
@@ -310,7 +313,8 @@ function pgcal_extractMeetLink(event) {
   if (event.description) {
     const descriptionMatch = event.description.match(meetRegex);
     if (descriptionMatch) {
-      return descriptionMatch[0];
+      const meetUrl = descriptionMatch[0];
+      return meetUrl.startsWith('http') ? meetUrl : 'https://' + meetUrl;
     }
   }
   
