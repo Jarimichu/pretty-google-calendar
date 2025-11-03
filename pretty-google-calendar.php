@@ -3,13 +3,13 @@
 Plugin Name: Google Calendar Integration for Venture Upward
 Plugin URI: https://github.com/Jarimichu/pretty-google-calendar
 Description: A Google Calendar API Integration modified for use with Venture Upward Live Classes.
-Version: 1.1.4
+Version: 2.1.4
 Author: Jarimichu
 Text Domain: pretty-google-calendar
 */
 
 
-define('PGCAL_VER', "1.1.4");
+define('PGCAL_VER', "2.1.4");
 define('PGCAL_DIR', plugin_dir_path(__FILE__));
 define('PGCAL_TEMPLATE_DIR', PGCAL_DIR . 'templates/');
 define('PGCAL_URL', plugin_dir_url(__FILE__));
