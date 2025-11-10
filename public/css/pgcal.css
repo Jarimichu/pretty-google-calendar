@@ -96,29 +96,44 @@
   position: relative;
 }
 
-/* Specific styling for list views - position at far right of the row */
+/* Buttons row styling - new approach with dedicated row */
+.pgcal-buttons-row {
+  background-color: rgba(0, 0, 0, 0.02) !important;
+  border-top: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+.pgcal-buttons-cell {
+  padding: 10px 15px !important;
+  border: none !important;
+}
+
+.pgcal-buttons-container {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.pgcal-meet-btn,
+.pgcal-docs-btn,
+.pgcal-event-btn {
+  flex: 1;
+  min-width: 120px;
+  max-width: 200px;
+  text-align: center;
+}
+
+/* Remove old list event positioning styles - no longer needed */
 .fc-list-event {
   position: relative;
 }
 
-.fc-list-event .pgcal-buttons-container {
-  position: absolute;
-  top: 50%;
-  right: 10px;
-  transform: translateY(-50%);
-  margin: 0;
-  flex-direction: row;
-  align-items: center;
-  display: flex;
-  gap: 4px;
-  z-index: 10;
-  line-height: 1;
-}
-
-/* Add padding to list event content to prevent overlap with buttons */
+/* Remove padding from event content - buttons are now in separate row */
 .fc-list-event .fc-list-event-title,
 .fc-list-event .fc-list-event-time {
-  padding-right: 190px; /* Space for all three buttons */
+  padding-right: 10px;
 }
 
 /* Description row styling */
@@ -168,6 +183,27 @@
   display: none;
 }
 
+/* Tablet optimizations (768px - 1024px) */
+@media (max-width: 1024px) and (min-width: 768px) {
+  .pgcal-meet-btn,
+  .pgcal-docs-btn,
+  .pgcal-event-btn {
+    font-size: 11px;
+    padding: 6px 10px;
+    min-width: 110px;
+    max-width: 180px;
+  }
+  
+  .pgcal-buttons-container {
+    gap: 6px;
+  }
+  
+  .pgcal-buttons-cell {
+    padding: 8px 12px !important;
+  }
+}
+
+/* Phone optimizations (up to 767px) */
 @media (max-width: 767px) {
   .pgcal-description-cell {
     padding: 6px 10px 8px 20px !important;
@@ -183,17 +219,41 @@
   .pgcal-docs-btn,
   .pgcal-event-btn {
     font-size: 10px;
-    padding: 1px 4px;
+    padding: 6px 8px;
+    min-width: 90px;
+    max-width: 150px;
   }
   
-  .fc-list-event .pgcal-buttons-container {
-    right: 5px;
-    gap: 2px;
+  .pgcal-buttons-container {
+    gap: 5px;
   }
   
-  /* Reduce padding on mobile */
-  .fc-list-event .fc-list-event-title,
-  .fc-list-event .fc-list-event-time {
-    padding-right: 170px;
+  .pgcal-buttons-cell {
+    padding: 8px 10px !important;
+  }
+}
+
+/* Extra small phones (up to 480px) */
+@media (max-width: 480px) {
+  .pgcal-meet-btn,
+  .pgcal-docs-btn,
+  .pgcal-event-btn {
+    font-size: 9px;
+    padding: 5px 6px;
+    min-width: 80px;
+    max-width: 120px;
+  }
+  
+  .pgcal-buttons-container {
+    gap: 4px;
+  }
+  
+  .pgcal-buttons-cell {
+    padding: 6px 8px !important;
+  }
+  
+  .pgcal-description-cell {
+    padding: 5px 8px 6px 15px !important;
+    font-size: 0.8em;
   }
 }

@@ -102,6 +102,11 @@ async function pgcal_render_calendar(pgcalSettings, ajaxurl) {
       
       // Only add buttons in list view, not in grid/calendar view
       if (eventEl.closest('.fc-list-event')) {
+        // Add description row if enabled
+        if (pgcalSettings["show_description"] === "true") {
+          pgcal_addDescriptionRow(info, eventEl, pgcalSettings);
+        }
+        
         // Extract data for all button types
         const meetLink = pgcal_extractMeetLink(info.event);
         const driveLinks = pgcal_extractDriveLinks(info.event);
@@ -112,28 +117,41 @@ async function pgcal_render_calendar(pgcalSettings, ajaxurl) {
           const docsButton = pgcal_createDocumentsButton(driveLinks);
           const eventButton = pgcal_createEventButton(eventUrl);
           
-          // Create a container for the buttons
-          const buttonsContainer = document.createElement('div');
-          buttonsContainer.className = 'pgcal-buttons-container';
-          
-          // Add all buttons to the container
+          // Create buttons HTML
           let buttonsHtml = '';
           if (docsButton) buttonsHtml += docsButton;
           if (meetButton) buttonsHtml += meetButton;
           if (eventButton) buttonsHtml += eventButton;
-          buttonsContainer.innerHTML = buttonsHtml;
           
-          // Add to the list event row (parent container)
+          // Create a new table row for the buttons
           const listEventRow = eventEl.closest('.fc-list-event');
-          if (listEventRow) {
-            listEventRow.style.position = 'relative';
-            listEventRow.appendChild(buttonsContainer);
+          if (listEventRow && buttonsHtml) {
+            // Check if buttons row already exists
+            if (listEventRow.nextElementSibling && listEventRow.nextElementSibling.classList.contains('pgcal-buttons-row')) {
+              return;
+            }
+            
+            const buttonsRow = document.createElement('tr');
+            buttonsRow.className = 'pgcal-buttons-row fc-list-event';
+            
+            const buttonsCell = document.createElement('td');
+            buttonsCell.className = 'pgcal-buttons-cell';
+            buttonsCell.colSpan = listEventRow.children.length;
+            
+            const buttonsContainer = document.createElement('div');
+            buttonsContainer.className = 'pgcal-buttons-container';
+            buttonsContainer.innerHTML = buttonsHtml;
+            
+            buttonsCell.appendChild(buttonsContainer);
+            buttonsRow.appendChild(buttonsCell);
+            
+            // Insert the buttons row after description row if it exists, otherwise after event row
+            let insertAfter = listEventRow;
+            if (listEventRow.nextElementSibling && listEventRow.nextElementSibling.classList.contains('pgcal-description-row')) {
+              insertAfter = listEventRow.nextElementSibling;
+            }
+            insertAfter.parentNode.insertBefore(buttonsRow, insertAfter.nextSibling);
           }
-        }
-        
-        // Add description row if enabled
-        if (pgcalSettings["show_description"] === "true") {
-          pgcal_addDescriptionRow(info, eventEl, pgcalSettings);
         }
       }
     },
