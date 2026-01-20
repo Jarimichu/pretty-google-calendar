@@ -110,15 +110,18 @@ async function pgcal_render_calendar(pgcalSettings, ajaxurl) {
         // Extract data for all button types
         const meetLink = pgcal_extractMeetLink(info.event);
         const driveLinks = pgcal_extractDriveLinks(info.event);
+        const otherLinks = pgcal_extractOtherLinks(info.event);
         const eventUrl = info.event.url;
         
-        if (meetLink || driveLinks.length > 0 || eventUrl) {
+        if (meetLink || driveLinks.length > 0 || otherLinks.length > 0 || eventUrl) {
           const meetButton = pgcal_createMeetButton(meetLink);
           const docsButton = pgcal_createDocumentsButton(driveLinks);
+          const otherButton = pgcal_createOtherLinkButton(otherLinks);
           const eventButton = pgcal_createEventButton(eventUrl);
           
-          // Create buttons HTML
+          // Create buttons HTML in order: Yellow, Green, Blue, Purple
           let buttonsHtml = '';
+          if (otherButton) buttonsHtml += otherButton;
           if (docsButton) buttonsHtml += docsButton;
           if (meetButton) buttonsHtml += meetButton;
           if (eventButton) buttonsHtml += eventButton;

@@ -322,6 +322,55 @@ function pgcal_extractMeetLink(event) {
 }
 
 /**
+ * Extract other links from event description (excluding Meet and Drive links)
+ *
+ * @param {object} event Event object from FullCalendar
+ * @returns {array} Array of other URLs found
+ */
+function pgcal_extractOtherLinks(event) {
+  const otherLinks = [];
+  
+  // Match URLs but exclude Google Meet and Google Drive domains
+  const urlRegex = /https?:\/\/(?!meet\.google\.com|docs\.google\.com|sheets\.google\.com|slides\.google\.com|drive\.google\.com)[^\s<>"]+/gi;
+  
+  // Check the description for other links
+  if (event.extendedProps && event.extendedProps.description) {
+    const descriptionMatches = event.extendedProps.description.match(urlRegex);
+    if (descriptionMatches) {
+      descriptionMatches.forEach(url => {
+        // Clean up any trailing punctuation
+        const cleanUrl = url.replace(/[?!.]*$/, '');
+        if (!otherLinks.some(link => link.url === cleanUrl)) {
+          otherLinks.push({
+            url: cleanUrl,
+            title: 'Link'
+          });
+        }
+      });
+    }
+  }
+  
+  // Check description directly on event  
+  if (event.description) {
+    const descriptionMatches = event.description.match(urlRegex);
+    if (descriptionMatches) {
+      descriptionMatches.forEach(url => {
+        const cleanUrl = url.replace(/[?!.]*$/, '');
+        // Avoid duplicates
+        if (!otherLinks.some(link => link.url === cleanUrl)) {
+          otherLinks.push({
+            url: cleanUrl,
+            title: 'Link'
+          });
+        }
+      });
+    }
+  }
+  
+  return otherLinks;
+}
+
+/**
  * Extract Google Drive links from event attachments or description
  *
  * @param {object} event Event object from FullCalendar
@@ -436,6 +485,28 @@ function pgcal_createMeetButton(meetUrl) {
   if (!meetUrl) return '';
   
   return `<button class="pgcal-meet-btn" onclick="window.open('${meetUrl}', '_blank')" title="Join Google Meet">Join Classroom</button>`;
+}
+
+/**
+ * Create View Link button for other links
+ *
+ * @param {array} otherLinks Array of other link objects
+ * @returns {string} HTML button element
+ */
+function pgcal_createOtherLinkButton(otherLinks) {
+  if (!otherLinks || otherLinks.length === 0) return '';
+  
+  // If only one link, open it directly
+  if (otherLinks.length === 1) {
+    return `<button class="pgcal-other-btn" onclick="window.open('${otherLinks[0].url}', '_blank')" title="View Link">View Link</button>`;
+  }
+  
+  // If multiple links, open all of them
+  const linksHtml = otherLinks.map(link => 
+    `window.open('${link.url}', '_blank');`
+  ).join(' ');
+  
+  return `<button class="pgcal-other-btn" onclick="${linksHtml}" title="View ${otherLinks.length} Links">View Links (${otherLinks.length})</button>`;
 }
 
 /**

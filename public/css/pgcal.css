@@ -24,9 +24,10 @@
   white-space: normal;
 }
 
-/* Google Meet, Documents, and Event button styling - List view only */
+/* Google Meet, Documents, Other Links, and Event button styling - List view only */
 .pgcal-meet-btn,
 .pgcal-docs-btn,
+.pgcal-other-btn,
 .pgcal-event-btn {
   border: none;
   border-radius: 4px;
@@ -73,8 +74,20 @@
   text-decoration: none;
 }
 
+.pgcal-other-btn {
+  background-color: #ffc107;
+  color: black;
+}
+
+.pgcal-other-btn:hover {
+  background-color: #ffb300;
+  color: black;
+  text-decoration: none;
+}
+
 .pgcal-meet-btn:focus,
 .pgcal-docs-btn:focus,
+.pgcal-other-btn:focus,
 .pgcal-event-btn:focus {
   outline: none;
 }
@@ -89,6 +102,10 @@
 
 .pgcal-event-btn:focus {
   box-shadow: 0 0 0 2px rgba(156, 39, 176, 0.3);
+}
+
+.pgcal-other-btn:focus {
+  box-shadow: 0 0 0 2px rgba(255, 193, 7, 0.3);
 }
 
 /* Make sure the button doesn't interfere with event layout */
@@ -118,6 +135,7 @@
 
 .pgcal-meet-btn,
 .pgcal-docs-btn,
+.pgcal-other-btn,
 .pgcal-event-btn {
   flex: 1;
   min-width: 120px;
@@ -187,6 +205,7 @@
 @media (max-width: 1024px) and (min-width: 768px) {
   .pgcal-meet-btn,
   .pgcal-docs-btn,
+  .pgcal-other-btn,
   .pgcal-event-btn {
     font-size: 11px;
     padding: 6px 10px;
@@ -217,6 +236,7 @@
   
   .pgcal-meet-btn,
   .pgcal-docs-btn,
+  .pgcal-other-btn,
   .pgcal-event-btn {
     font-size: 10px;
     padding: 6px 8px;
@@ -237,6 +257,7 @@
 @media (max-width: 480px) {
   .pgcal-meet-btn,
   .pgcal-docs-btn,
+  .pgcal-other-btn,
   .pgcal-event-btn {
     font-size: 9px;
     padding: 5px 6px;
