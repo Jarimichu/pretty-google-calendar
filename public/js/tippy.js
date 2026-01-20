@@ -45,12 +45,15 @@ function pgcal_tippyRender(info, currCal) {
         View Link
       </button>`;
     } else {
-      const linksAction = otherLinks.map(link => `window.open('${link.url}', '_blank');`).join(' ');
-      buttonsHtml += `<button onclick="${linksAction}" 
+      const dropdownId = 'pgcal-tooltip-dropdown-' + Math.random().toString(36).substr(2, 9);
+      const linksList = otherLinks.map(link => 
+        `<li style="margin: 5px 0;"><a href="${link.url}" target="_blank" style="color: #1976d2; text-decoration: underline;">${link.url}</a></li>`
+      ).join('');
+      buttonsHtml += `<button onclick="pgcal_toggleOtherLinksDropdown('${dropdownId}')" 
               style="background-color: #ffc107; color: black; border: none; border-radius: 4px; 
                      padding: 6px 12px; font-size: 12px; cursor: pointer; margin-right: 8px;">
         View Links (${otherLinks.length})
-      </button>`;
+      </button><div id="${dropdownId}" style="display: none; margin-top: 8px; padding: 8px; background-color: rgba(0,0,0,0.05); border-radius: 4px;"><ul style="margin: 0; padding-left: 20px; list-style-type: disc;">${linksList}</ul></div>`;
     }
   }
   

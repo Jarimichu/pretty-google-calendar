@@ -322,7 +322,7 @@ function pgcal_extractMeetLink(event) {
 }
 
 /**
- * Extract other links from event description (excluding Meet and Drive links)
+ * Extract other links from event description (excluding all Google links)
  *
  * @param {object} event Event object from FullCalendar
  * @returns {array} Array of other URLs found
@@ -330,8 +330,8 @@ function pgcal_extractMeetLink(event) {
 function pgcal_extractOtherLinks(event) {
   const otherLinks = [];
   
-  // Match URLs but exclude Google Meet and Google Drive domains
-  const urlRegex = /https?:\/\/(?!meet\.google\.com|docs\.google\.com|sheets\.google\.com|slides\.google\.com|drive\.google\.com)[^\s<>"]+/gi;
+  // Match URLs but exclude all google.com domains
+  const urlRegex = /https?:\/\/(?!(?:[a-z0-9-]+\.)*google\.com)[^\s<>"]+/gi;
   
   // Check the description for other links
   if (event.extendedProps && event.extendedProps.description) {
@@ -501,12 +501,25 @@ function pgcal_createOtherLinkButton(otherLinks) {
     return `<button class="pgcal-other-btn" onclick="window.open('${otherLinks[0].url}', '_blank')" title="View Link">View Link</button>`;
   }
   
-  // If multiple links, open all of them
-  const linksHtml = otherLinks.map(link => 
-    `window.open('${link.url}', '_blank');`
-  ).join(' ');
+  // If multiple links, create a dropdown
+  const dropdownId = 'pgcal-other-dropdown-' + Math.random().toString(36).substr(2, 9);
+  const linksList = otherLinks.map(link => 
+    `<li><a href="${link.url}" target="_blank">${link.url}</a></li>`
+  ).join('');
   
-  return `<button class="pgcal-other-btn" onclick="${linksHtml}" title="View ${otherLinks.length} Links">View Links (${otherLinks.length})</button>`;
+  return `<button class="pgcal-other-btn" onclick="pgcal_toggleOtherLinksDropdown('${dropdownId}')" title="View ${otherLinks.length} Links">View Links (${otherLinks.length})</button><div id="${dropdownId}" class="pgcal-other-dropdown" style="display: none;"><ul>${linksList}</ul></div>`;
+}
+
+/**
+ * Toggle the dropdown for other links
+ *
+ * @param {string} dropdownId The ID of the dropdown to toggle
+ */
+function pgcal_toggleOtherLinksDropdown(dropdownId) {
+  const dropdown = document.getElementById(dropdownId);
+  if (dropdown) {
+    dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+  }
 }
 
 /**

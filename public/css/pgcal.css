@@ -108,6 +108,37 @@
   box-shadow: 0 0 0 2px rgba(255, 193, 7, 0.3);
 }
 
+/* Dropdown styling for multiple other links */
+.pgcal-other-dropdown {
+  margin-top: 8px;
+  padding: 8px 12px;
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+  width: 100%;
+}
+
+.pgcal-other-dropdown ul {
+  margin: 0;
+  padding-left: 20px;
+  list-style-type: disc;
+}
+
+.pgcal-other-dropdown li {
+  margin: 5px 0;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.pgcal-other-dropdown a {
+  color: #1976d2;
+  text-decoration: underline;
+  word-break: break-all;
+}
+
+.pgcal-other-dropdown a:hover {
+  text-decoration: none;
+}
+
 /* Make sure the button doesn't interfere with event layout */
 .fc-event-main-frame {
   position: relative;
@@ -128,7 +159,7 @@
   display: flex;
   flex-direction: row;
   gap: 8px;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   flex-wrap: wrap;
 }
@@ -141,6 +172,14 @@
   min-width: 120px;
   max-width: 200px;
   text-align: center;
+}
+
+/* Container for other button with dropdown */
+.pgcal-buttons-container > div:has(.pgcal-other-dropdown) {
+  flex-basis: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 /* Remove old list event positioning styles - no longer needed */
